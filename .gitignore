@@ -3,6 +3,13 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+# Ignora l'ambiente virtuale di Python
+# Contiene centinaia di file che non devono essere versionati
+venv/
+
+
+.streamlit/secrets.toml```
+
 # User-specific files
 *.rsuser
 *.suo
