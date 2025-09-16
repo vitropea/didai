@@ -2,6 +2,12 @@
 
 `didAi` è un'applicazione web interattiva costruita con Streamlit che permette agli utenti di esplorare dilemmi etici complessi nel campo dell'Intelligenza Artificiale. L'applicazione si basa sui concetti esposti nel paper *"Macro Ethics Principles for Responsible AI Systems"*.
 
+## 🌐 Live Demo
+
+È possibile testare una versione live dell'applicazione al seguente indirizzo:
+
+**[Testa didAi Live](https://av5aqj5yhyjyhtvs4gfply.streamlit.app)**
+
 Ogni scenario presenta un dilemma, due possibili scelte che riflettono diversi framework etici, e un'analisi approfondita della decisione presa. Per rendere l'esperienza più riflessiva, l'applicazione utilizza l'API di Google Gemini per generare domande socratiche che spingono l'utente a giustificare la propria scelta.
 
 ## 🚀 Funzionalità
