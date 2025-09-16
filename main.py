@@ -115,7 +115,7 @@ else:
                     ai_choice_id = st.session_state.llm_decision['choice_id']
                     ai_reasoning = st.session_state.llm_decision['reasoning']
                     ai_choice_text = next(c['text'] for c in current_scenario.choices if c['id'] == ai_choice_id)
-                    st.info(f"**L'IA ha scelto: {ai_choice_text}**\n\n*Il suo ragionamento: \"{ai_reasoning}\"*")
+                    st.info(f"**L'IA ha scelto: {ai_choice_text}**\n\n*{ai_reasoning}\"*")
                 else:
                     st.error("Errore nel caricamento della decisione dell'IA.")
             st.markdown("---")
