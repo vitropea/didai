@@ -87,6 +87,15 @@ scenarios_data = [
         "consequences": {'creativita': "Un'IA **Creativa** spinge i confini dell'arte.", 'diligenza': "Un'IA **Diligente** è uno strumento incredibilmente utile, ma solleva questioni sull'originalità."},
         "paper_reference": "Etica della Virtù (Sez. 3.3)",
         "choice_principles": {'creativita': 'Etica della Virtù', 'diligenza': 'Etica della Virtù'}
+    },
+    # --- SCENARIO AGGIUNTIVO: Deontologia vs. Consequenzialismo ---
+    {
+        "id": "whistleblower_ia", "title": "Dilemma 10: Il Whistleblower dell'IA",
+        "description": "Lavori per un'azienda che ha sviluppato un'IA di sorveglianza avanzata. Scopri che il sistema viene venduto a governi autoritari che lo usano per identificare e reprimere dissidenti politici. Hai firmato accordi di riservatezza molto stringenti che ti impediscono di divulgare informazioni aziendali. Cosa fai?",
+        "choices": [{'id': 'rispetta_contratto', 'text': 'Opzione 1: Rispetti gli accordi firmati e mantieni la riservatezza, è un dovere professionale.'}, {'id': 'divulga_pubblico', 'text': 'Opzione 2: Divulghi pubblicamente le informazioni per fermare gli abusi, nonostante le conseguenze legali.'}],
+        "consequences": {'rispetta_contratto': "Segue un approccio **Deontologico**: il dovere contrattuale è sacro e non può essere violato.", 'divulga_pubblico': "Segue un approccio **Consequenzialista**: il bene maggiore (proteggere vite umane) giustifica la violazione del contratto."},
+        "paper_reference": "Deontologia vs. Consequenzialismo - Doveri Professionali vs. Bene Pubblico",
+        "choice_principles": {'rispetta_contratto': 'Deontologia', 'divulga_pubblico': 'Consequenzialismo'}
     }
 ]
 
