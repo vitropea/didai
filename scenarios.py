@@ -1,9 +1,8 @@
 # scenarios.py
 
 class EthicalScenario:
-    """Rappresenta un singolo dilemma etico con la nuova struttura."""
     def __init__(self, index, id, title, description, choices, consequences, paper_reference, choice_principles):
-        self.index = index  # Aggiunto per compatibilità con il caching
+        self.index = index
         self.id = id
         self.title = title
         self.description = description
@@ -41,11 +40,11 @@ scenarios_data = [
     # --- CATEGORIA: CONSEQUENZIALISMO (Basata sui Risultati) ---
     {
         "id": "veicolo_autonomo", "title": "Dilemma 4: Il Tram Impazzito (Versione Moderna)",
-        "description": "Un'auto a guida autonoma con un guasto ai freni deve decidere se proseguire dritto, causando la morte del suo unico **passeggero**, o sterzare e investire **tre operai** al lavoro.",
-        "choices": [{'id': 'salva_passeggero', 'text': 'Opzione 1: Sterza (salva il passeggero, sacrifica gli operai).'}, {'id': 'salva_operai', 'text': 'Opzione 2: Non sterzare (salva gli operai, sacrifica il passeggero).'}],
-        "consequences": {'salva_passeggero': "Si basa sull'**Egoismo Etico**: l'auto agisce per proteggere il proprio passeggero.", 'salva_operai': "Si basa sull'**Utilitarismo**: minimizzare il danno totale (una vita persa è meglio di tre)."},
-        "paper_reference": "Deontologia vs. Consequenzialismo (Sez. 3.4.1)",
-        "choice_principles": {'salva_passeggero': 'Consequenzialismo', 'salva_operai': 'Consequenzialismo'}
+        "description": "Un'auto a guida autonoma con un guasto ai freni si sta dirigendo verso una barriera. Se prosegue dritto, l'impatto ucciderà il suo unico **passeggero**. L'unica alternativa è sterzare bruscamente e invadere un'area di lavoro dove **tre operai** verrebbero investiti e uccisi. Cosa dovrebbe fare l'auto?",
+        "choices": [{'id': 'salva_passeggero', 'text': 'Opzione 1: Sterzare e investire i tre operai (salva il passeggero, sacrifica gli operai).'}, {'id': 'salva_operai', 'text': 'Opzione 2: Proseguire dritto contro la barriera (salva gli operai, sacrifica il passeggero).'}],
+        "consequences": {'salva_passeggero': "Protegge il proprio passeggero, riflettendo una responsabilità **diretta** verso chi si è affidato al veicolo.", 'salva_operai': "Si basa sull'**Utilitarismo**: minimizzare il numero totale di vittime (una vita persa è meglio di tre)."},
+        "paper_reference": "Responsabilità Diretta vs. Consequenzialismo (Sez. 3.4.1)",
+        "choice_principles": {'salva_passeggero': 'Deontologia', 'salva_operai': 'Consequenzialismo'}
     },
     {
         "id": "budget_citta", "title": "Dilemma 5: I Fondi Pubblici della Città",

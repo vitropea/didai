@@ -1,11 +1,16 @@
 # main.py
 import streamlit as st
 from collections import Counter
+import os
 
 def local_css(file_name):
     with open(file_name) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-st.set_page_config(page_title="DidAi - Laboratorio Etico", page_icon="assets/logo.png", layout="centered")
+
+# Percorso assoluto per il logo
+LOGO_PATH = os.path.join(os.path.dirname(__file__), "assets", "logo.png")
+
+st.set_page_config(page_title="DidAi - Laboratorio Etico", page_icon=LOGO_PATH, layout="centered")
 st.markdown("""<style>img {pointer-events: none;}</style>""", unsafe_allow_html=True)
 
 
@@ -28,7 +33,7 @@ PRINCIPLE_DEFINITIONS = {
 def show_results_page():
     col1, col2 = st.columns([1, 6])
     with col1:
-        st.image("assets/logo.png", width=100)
+        st.image(LOGO_PATH, width=100)
     with col2:
         st.header("Risultati Finali", anchor=False)
 
@@ -107,7 +112,7 @@ def show_results_page():
 if not st.session_state.test_started:
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        st.image("assets/logo.png", width=300)
+        st.image(LOGO_PATH, width=300)
 
     st.title("DidAi - Laboratorio Etico")
     st.markdown("Benvenuto in DidAi, un'esperienza interattiva per esplorare i dilemmi etici dell'Intelligenza Artificiale.")
@@ -126,7 +131,7 @@ else:
 
         col1, col2 = st.columns([1, 6])
         with col1:
-            st.image("assets/logo.png", width=100)
+            st.image(LOGO_PATH, width=100)
         with col2:
             st.progress((st.session_state.current_scenario_index + 1) / len(SCENARIOS), text=f"Dilemma {st.session_state.current_scenario_index + 1} di {len(SCENARIOS)}")
 
