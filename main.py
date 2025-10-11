@@ -28,12 +28,33 @@ st.markdown("""
     .logo-dark {display: none;}
     .logo-light {display: block;}
     
-    /* Quando il tema è scuro, inverti */
+    /* Quando il tema è scuro (rileva il data-theme di Streamlit) */
+    [data-theme="dark"] .logo-dark {display: block;}
+    [data-theme="dark"] .logo-light {display: none;}
+    
+    /* Fallback per prefers-color-scheme */
     @media (prefers-color-scheme: dark) {
-        .logo-dark {display: block;}
-        .logo-light {display: none;}
+        [data-theme="auto"] .logo-dark {display: block;}
+        [data-theme="auto"] .logo-light {display: none;}
     }
 </style>
+
+<script>
+    // Forza il rilevamento del tema Streamlit
+    const observer = new MutationObserver(() => {
+        const theme = window.parent.document.documentElement.getAttribute('data-theme');
+        document.documentElement.setAttribute('data-theme', theme || 'light');
+    });
+    
+    observer.observe(window.parent.document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-theme']
+    });
+    
+    // Imposta il tema iniziale
+    const initialTheme = window.parent.document.documentElement.getAttribute('data-theme');
+    document.documentElement.setAttribute('data-theme', initialTheme || 'light');
+</script>
 """, unsafe_allow_html=True)
 
 
