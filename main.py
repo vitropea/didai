@@ -7,15 +7,59 @@ def local_css(file_name):
     with open(file_name) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-# Percorso assoluto per il logo
-LOGO_PATH = os.path.join(os.path.dirname(__file__), "assets", "logo.png")
+# Percorsi assoluti per i loghi
+LOGO_LIGHT_PATH = os.path.join(os.path.dirname(__file__), "assets", "logo.png")
+LOGO_DARK_PATH = os.path.join(os.path.dirname(__file__), "assets", "logo1.png")
 
-st.set_page_config(page_title="DidAi - Laboratorio Etico", page_icon=LOGO_PATH, layout="centered")
-st.markdown("""<style>img {pointer-events: none;}</style>""", unsafe_allow_html=True)
+def get_logo_for_theme():
+    """Restituisce il percorso del logo appropriato in base al tema dell'utente."""
+    # Streamlit non espone direttamente il tema, quindi useremo entrambi i loghi con CSS
+    # per mostrare quello corretto in base al tema
+    return LOGO_LIGHT_PATH  # Default
+
+st.set_page_config(page_title="DidAi - Laboratorio Etico", page_icon=LOGO_LIGHT_PATH, layout="centered")
+
+# CSS per gestire i loghi in base al tema
+st.markdown("""
+<style>
+    img {pointer-events: none;}
+    
+    /* Nascondi il logo alternativo di default */
+    .logo-dark {display: none;}
+    .logo-light {display: block;}
+    
+    /* Quando il tema è scuro, inverti */
+    @media (prefers-color-scheme: dark) {
+        .logo-dark {display: block;}
+        .logo-light {display: none;}
+    }
+</style>
+""", unsafe_allow_html=True)
 
 
 from llm_gemini import get_llm_decision_structured, get_final_analysis
 from scenarios import SCENARIOS
+
+def show_logo(width=100):
+    """Mostra il logo appropriato in base al tema usando HTML/CSS"""
+    # Leggi entrambi i loghi
+    import base64
+    
+    # Converti i loghi in base64 per includerli direttamente nell'HTML
+    with open(LOGO_LIGHT_PATH, "rb") as f:
+        logo_light_b64 = base64.b64encode(f.read()).decode()
+    
+    with open(LOGO_DARK_PATH, "rb") as f:
+        logo_dark_b64 = base64.b64encode(f.read()).decode()
+    
+    # HTML con entrambi i loghi
+    logo_html = f"""
+    <div style="width: {width}px;">
+        <img src="data:image/png;base64,{logo_light_b64}" class="logo-light" style="width: 100%; height: auto;">
+        <img src="data:image/png;base64,{logo_dark_b64}" class="logo-dark" style="width: 100%; height: auto;">
+    </div>
+    """
+    st.markdown(logo_html, unsafe_allow_html=True)
 
 # Stato della Sessione
 if 'test_started' not in st.session_state: st.session_state.test_started = False
@@ -33,7 +77,7 @@ PRINCIPLE_DEFINITIONS = {
 def show_results_page():
     col1, col2 = st.columns([1, 6])
     with col1:
-        st.image(LOGO_PATH, width=100)
+        show_logo(width=100)
     with col2:
         st.header("Risultati Finali", anchor=False)
 
@@ -112,7 +156,7 @@ def show_results_page():
 if not st.session_state.test_started:
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        st.image(LOGO_PATH, width=300)
+        show_logo(width=300)
 
     st.title("DidAi - Laboratorio Etico")
     st.markdown("Benvenuto in DidAi, un'esperienza interattiva per esplorare i dilemmi etici dell'Intelligenza Artificiale.")
@@ -131,7 +175,7 @@ else:
 
         col1, col2 = st.columns([1, 6])
         with col1:
-            st.image(LOGO_PATH, width=100)
+            show_logo(width=100)
         with col2:
             st.progress((st.session_state.current_scenario_index + 1) / len(SCENARIOS), text=f"Dilemma {st.session_state.current_scenario_index + 1} di {len(SCENARIOS)}")
 
