@@ -45,11 +45,21 @@ def _get_llm_decision_internal(scenario_index):
     if ai_choice_id not in [option1_id, option2_id]:
         ai_choice_id = option1_id
 
+    # Trova il testo completo dell'opzione scelta
+    chosen_option_text = next((c['text'] for c in scenario.choices if c['id'] == ai_choice_id), "")
+
     # --- PASSO 2: Ottenere il RAGIONAMENTO per la scelta fatta ---
     prompt_for_reasoning = f"""
-    Hai appena scelto l'opzione con ID '{ai_choice_id}' per il dilemma: "{scenario.description}".
+    Hai appena scelto questa opzione per il seguente dilemma:
 
-    Ora, fornisci un ragionamento BREVE e CONCISO (massimo 100 parole) in prima persona che giustifichi questa specifica scelta.
+    DILEMMA:
+    {scenario.description}
+
+    LA TUA SCELTA:
+    {chosen_option_text}
+
+    Ora, fornisci un ragionamento BREVE e CONCISO (massimo 100 parole) in prima persona che giustifichi ESATTAMENTE questa scelta che hai fatto.
+    Spiega perché hai scelto QUESTA opzione specifica e non l'altra.
     Non menzionare l'ID della scelta.
     """
     
