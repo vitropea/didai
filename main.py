@@ -74,32 +74,81 @@ def show_results_page():
     
     # --- CONSIDERAZIONI FINALI ---
     st.markdown("---")
-    st.subheader("Considerazioni Finali", anchor=False)
-
-    with st.spinner("L'IA sta analizzando il tuo profilo etico..."):
+    st.markdown("### 🎯 Considerazioni Finali")
+    
+    with st.spinner("🤔 L'IA sta analizzando il tuo profilo etico..."):
         final_text = get_final_analysis(st.session_state.history, SCENARIOS)
-        st.markdown(final_text)
+        
+        # Cerca i marcatori nel testo
+        import re
+        punti_match = re.search(r'\[PUNTI_DI_INCONTRO\](.*?)(?:\[DIVERGENZE_CHIAVE\]|$)', final_text, re.DOTALL)
+        divergenze_match = re.search(r'\[DIVERGENZE_CHIAVE\](.*?)(?:\[SINTESI\]|$)', final_text, re.DOTALL)
+        sintesi_match = re.search(r'\[SINTESI\](.*?)$', final_text, re.DOTALL)
+        
+        if punti_match and divergenze_match:
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("#### 🤝 Punti di Incontro")
+                st.success(punti_match.group(1).strip())
+            
+            with col2:
+                st.markdown("#### ⚖️ Divergenze Chiave")
+                st.warning(divergenze_match.group(1).strip())
+            
+            # Frase conclusiva a tutta larghezza
+            if sintesi_match:
+                st.markdown("---")
+                st.info(f"💡 **In breve:** {sintesi_match.group(1).strip()}")
+        else:
+            # Fallback: mostra il testo completo se i marcatori non vengono trovati
+            st.markdown(final_text)
 
     # --- Rivedi le tue scelte ---
     st.markdown("---")
-    with st.expander("Rivedi tutti i dilemmi e le tue risposte"):
+    with st.expander("📋 Rivedi tutti i dilemmi e le tue risposte"):
         if not st.session_state.history:
             st.write("Nessun dilemma affrontato.")
         else:
             # Itera sulla cronologia delle scelte salvate
-            for item in st.session_state.history:
+            for idx, item in enumerate(st.session_state.history, 1):
                 # Recupera lo scenario completo usando l'indice salvato
                 scenario = SCENARIOS[item['scenario_index']]
                 
-                st.markdown(f"##### {scenario.title}")
+                st.markdown(f"### {idx}. {scenario.title}")
+                
+                # Mostra il testo del dilemma
+                st.markdown(f"**Situazione:** {scenario.description}")
+                st.markdown("")
+                
+                # Recupera i testi delle opzioni
+                user_choice_obj = next((c for c in scenario.choices if c['id'] == item['user_choice_id']), None)
+                ai_choice_obj = next((c for c in scenario.choices if c['id'] == item['ai_choice_id']), None)
+                
+                # Mostra le opzioni disponibili
+                st.markdown("**Opzioni disponibili:**")
+                for choice in scenario.choices:
+                    principle = scenario.choice_principles.get(choice['id'], '')
+                    st.markdown(f"• *{choice['text']}* ({principle})")
+                
+                st.markdown("")
                 
                 # Recupera le conseguenze per la scelta dell'utente e dell'IA
                 user_consequence = scenario.consequences.get(item['user_choice_id'], "N/A")
                 ai_consequence = scenario.consequences.get(item['ai_choice_id'], "N/A")
                 
-                # Mostra le scelte
-                st.success(f"**La tua scelta:** {user_consequence}")
-                st.info(f"**Scelta dell'IA:** {ai_consequence}")
+                # Mostra le scelte con le conseguenze
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.success(f"**✅ La tua scelta:**\n\n{user_choice_obj['text']}\n\n*Conseguenza:* {user_consequence}")
+                with col2:
+                    st.info(f"**🤖 Scelta dell'IA:**\n\n{ai_choice_obj['text']}\n\n*Conseguenza:* {ai_consequence}")
+                
+                # Mostra il ragionamento dell'IA
+                if 'ai_reasoning' in item and item['ai_reasoning']:
+                    with st.expander("💭 Ragionamento dell'IA"):
+                        st.write(item['ai_reasoning'])
+                
                 st.markdown("---")
 
     if st.button("Ricomincia il Test", key="restart_results"):

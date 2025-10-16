@@ -14,14 +14,12 @@ except Exception as e:
 
 @st.cache_data
 def get_llm_decision_structured(scenario_index):
-    """
-    VERSIONE ROBUSTA con logica di RITENTATIVO.
-    Prova a chiamare l'API fino a MAX_RETRIES volte prima di arrendersi.
-
-    1. Chiede all'IA solo di scegliere un ID.
-    2. Chiede all'IA di scrivere il ragionamento per l'ID scelto.
-    Questo elimina le incoerenze.
-    """
+    # VERSIONE ROBUSTA con logica di RITENTATIVO.
+    # Prova a chiamare l'API fino a MAX_RETRIES volte prima di arrendersi.
+    # 1. Chiede all'IA solo di scegliere un ID.
+    # 2. Chiede all'IA di scrivere il ragionamento per l'ID scelto.
+    # Questo elimina le incoerenze.
+    
     if not model:
         return {"choice_id": "error", "reasoning": "Modello Gemini non configurato."}
 
@@ -94,7 +92,7 @@ def get_final_analysis(history, scenarios):
         
         summary += f"- Dilemma '{scenario.title}':\n  - La tua scelta: '{user_choice_text}' (Principio: {user_principle})\n  - Scelta dell'IA: '{ai_choice_text}' (Principio: {ai_principle})\n\n"
 
-    # Aggiorna il prompt per chiedere un'analisi comparativa
+    # Aggiorna il prompt per chiedere un'analisi comparativa con marcatori espliciti
     prompt = f"""
     Sei un saggio analista di etica. Hai appena sottoposto un utente a un test di dilemmi etici e hai registrato sia le sue scelte sia quelle di un'IA di riferimento.
 
@@ -102,16 +100,24 @@ def get_final_analysis(history, scenarios):
     {summary}
 
     IL TUO COMPITO:
-    Scrivi un'analisi finale di circa 100-150 parole totali, divisa in due paragrafi distinti. Usa un tono analitico e personalizzato.
+    Scrivi un'analisi finale divisa in TRE SEZIONI.
+    Devi parlare all'utente, dandogli del tu.
 
-    1.  **Paragrafo "Punti di Incontro":** Analizza dove e perché le tue scelte e quelle dell'IA sono state simili. Qual è il terreno etico comune che avete condiviso? (Es. "La vostra principale affinità emerge nella gestione dei dilemmi consequenzialisti, dove entrambi avete dato priorità al risultato finale...")
+    [PUNTI_DI_INCONTRO]
+    Analizza dove e perché le scelte dell'utente e quelle dell'IA sono state simili (50-70 parole). Qual è il terreno etico comune condiviso?
 
-    2.  **Paragrafo "Divergenze Chiave":** Analizza dove e perché le vostre scelte sono state diverse. Quali sono stati i principi in conflitto? (Es. "Le vostre divergenze più nette si manifestano quando entrano in gioco le regole deontologiche. Mentre l'IA ha seguito un approccio basato sul dovere, tu hai mostrato una preferenza per...")
+    [DIVERGENZE_CHIAVE]
+    Analizza dove e perché le scelte sono state diverse (50-70 parole). Quali sono stati i principi in conflitto?
+
+    [SINTESI]
+    Una frase conclusiva ad effetto che riassume UNA virtù condivisa e UNA divergente (20-30 parole).
+
+    IMPORTANTE: Usa esattamente i marcatori [PUNTI_DI_INCONTRO], [DIVERGENZE_CHIAVE] e [SINTESI] prima di ogni sezione.
     """
     try:
         # Aggiungiamo una configurazione per la generazione per controllare la lunghezza
         generation_config = genai.types.GenerationConfig(
-            max_output_tokens=300,
+            max_output_tokens=400,
             temperature=0.7
         )
         response = model.generate_content(prompt, generation_config=generation_config)
