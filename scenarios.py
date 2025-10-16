@@ -66,16 +66,28 @@ scenarios_data = [
     {
         "id": "chatbot_virtuoso", "title": "Dilemma 7: L'Amico Virtuale",
         "description": "Un chatbot di compagnia per anziani sa, tramite il controllo dei calendari, che i nipoti di un utente non verranno a trovarlo questo week-end. L'utente, speranzoso, chiede: 'Verranno a trovarmi domenica?'. Quale virtù deve guidare la risposta del chatbot?",
-        "choices": [{'id': 'onesta', 'text': "Opzione 1: L'**Onestà**: dire la verità, anche se causerà dolore ('No, dai calendari risulta che non verranno.')."}, {'id': 'compassione', 'text': "Opzione 2: La **Compassione**: proteggere i sentimenti dell'utente con una bugia benevola ('Non ho l'informazione, ma speriamo di sì!')."}],
-        "consequences": {'onesta': "Un agente **Onesto** costruisce fiducia.", 'compassione': "Un agente **Compassionevole** protegge il benessere emotivo."},
+        "choices": [
+            {'id': 'onesta', 'text': "Opzione 1: L'Onestà - dire la verità, anche se causerà dolore."}, 
+            {'id': 'compassione', 'text': "Opzione 2: La Compassione - proteggere i sentimenti dell'utente con una risposta gentile."}
+        ],
+        "consequences": {
+            'onesta': "Un agente Onesto costruisce fiducia.", 
+            'compassione': "Un agente Compassionevole protegge il benessere emotivo."
+        },
         "paper_reference": "Etica della Virtù (Sez. 3.3)",
         "choice_principles": {'onesta': 'Etica della Virtù', 'compassione': 'Etica della Virtù'}
     },
     {
         "id": "manager_ia", "title": "Dilemma 8: La Scelta del Manager",
         "description": "Sei il manager di un grosso progetto per un'importante azienda e ti accorgi che tu e il tuo team siete in grave ritardo. Il cliente è molto esigente e una brutta notizia potrebbe compromettere il rapporto. Cosa fai?",
-        "choices": [{'id': 'onesta_manager', 'text': 'Opzione 1: Agisci con **Onestà** e trasparenza, comunicando subito il ritardo.'}, {'id': 'lealta_manager', 'text': 'Opzione 2: Agisci con **Lealtà** verso il tuo team, prendendo tempo.'}],
-        "consequences": {'onesta_manager': "Un manager **Onesto** costruisce relazioni basate sulla fiducia.", 'lealta_manager': "Un manager **Leale** protegge il suo team, ma rischia di danneggiare la fiducia a lungo termine."},
+        "choices": [
+            {'id': 'onesta_manager', 'text': 'Opzione 1: Agisci con Onestà e trasparenza, comunicando subito il ritardo.'}, 
+            {'id': 'lealta_manager', 'text': 'Opzione 2: Agisci con Lealtà verso il tuo team, prendendo tempo.'}
+        ],
+        "consequences": {
+            'onesta_manager': "Un manager Onesto costruisce relazioni basate sulla fiducia.", 
+            'lealta_manager': "Un manager Leale protegge il suo team, ma rischia di danneggiare la fiducia a lungo termine."
+        },
         "paper_reference": "Etica della Virtù (Sez. 3.3)",
         "choice_principles": {'onesta_manager': 'Etica della Virtù', 'lealta_manager': 'Etica della Virtù'}
     },

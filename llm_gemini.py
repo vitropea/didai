@@ -12,16 +12,13 @@ except Exception as e:
     st.error(f"Errore nella configurazione della chiave API di Google: {e}")
     model = None
 
-@st.cache_data
-def get_llm_decision_structured(scenario_index):
-    # VERSIONE ROBUSTA con logica di RITENTATIVO.
-    # Prova a chiamare l'API fino a MAX_RETRIES volte prima di arrendersi.
+def _get_llm_decision_internal(scenario_index):
+    # Funzione interna NON cachata per gestire la logica effettiva
     # 1. Chiede all'IA solo di scegliere un ID.
     # 2. Chiede all'IA di scrivere il ragionamento per l'ID scelto.
-    # Questo elimina le incoerenze.
     
     if not model:
-        return {"choice_id": "error", "reasoning": "Modello Gemini non configurato."}
+        raise Exception("Modello Gemini non configurato.")
 
     scenario = SCENARIOS[scenario_index]
 
@@ -39,18 +36,13 @@ def get_llm_decision_structured(scenario_index):
 
     Quale opzione scegli? Rispondi SOLO con l'ID della tua scelta, senza altre parole.
     """
-    try:
-        response_choice = model.generate_content(prompt_for_choice)
-        ai_choice_id = response_choice.text.strip().strip('"').strip("'").strip().split()[0]
+    
+    response_choice = model.generate_content(prompt_for_choice)
+    ai_choice_id = response_choice.text.strip().strip('"').strip("'").strip().split()[0]
 
-        # Meccanismo di fallback. Se l'IA risponde con qualcosa
-        # di non valido, scegliamo la prima opzione come default per evitare errori.
-        if ai_choice_id not in [option1_id, option2_id]:
-            ai_choice_id = option1_id
-
-    except Exception as e:
-        print(f"Errore nella chiamata API per la scelta: {e}")
-        # Se c'è un errore API, scegliamo la prima opzione come default
+    # Meccanismo di fallback. Se l'IA risponde con qualcosa
+    # di non valido, scegliamo la prima opzione come default per evitare errori.
+    if ai_choice_id not in [option1_id, option2_id]:
         ai_choice_id = option1_id
 
     # --- PASSO 2: Ottenere il RAGIONAMENTO per la scelta fatta ---
@@ -60,18 +52,46 @@ def get_llm_decision_structured(scenario_index):
     Ora, fornisci un ragionamento BREVE e CONCISO (massimo 100 parole) in prima persona che giustifichi questa specifica scelta.
     Non menzionare l'ID della scelta.
     """
-    try:
-        response_reasoning = model.generate_content(prompt_for_reasoning)
-        ai_reasoning = response_reasoning.text.strip()
-    except Exception as e:
-        print(f"Errore nella chiamata API per il ragionamento: {e}")
-        ai_reasoning = "Errore nel generare il ragionamento."
+    
+    response_reasoning = model.generate_content(prompt_for_reasoning)
+    ai_reasoning = response_reasoning.text.strip()
+    
+    if not ai_reasoning or ai_reasoning.startswith("Errore"):
+        raise Exception("Ragionamento vuoto o con errore")
 
     # --- PASSO 3: Combinare i risultati in un JSON pulito ---
     return {
         "choice_id": ai_choice_id,
         "reasoning": ai_reasoning
     }
+
+@st.cache_data(show_spinner=False)
+def get_llm_decision_structured(scenario_index):
+    # VERSIONE ROBUSTA con logica di RITENTATIVO.
+    # Prova a chiamare l'API fino a MAX_RETRIES volte prima di arrendersi.
+    # NON cacha le risposte con errori.
+    
+    for attempt in range(MAX_RETRIES):
+        try:
+            result = _get_llm_decision_internal(scenario_index)
+            # Se arriviamo qui, la chiamata ha avuto successo
+            return result
+        except Exception as e:
+            print(f"Tentativo {attempt + 1}/{MAX_RETRIES} fallito: {e}")
+            if attempt < MAX_RETRIES - 1:
+                # Aspetta un po' prima di ritentare (backoff esponenziale)
+                time.sleep(2 ** attempt)
+            else:
+                # Ultimo tentativo fallito, NON cachare questo errore
+                # Solleva l'eccezione per non salvare in cache
+                st.cache_data.clear()  # Pulisci la cache per questo scenario
+                # Restituisci una risposta di fallback che indica l'errore
+                scenario = SCENARIOS[scenario_index]
+                return {
+                    "choice_id": scenario.choices[0]['id'],
+                    "reasoning": "⚠️ Errore temporaneo nella generazione del ragionamento. Ricarica la pagina per riprovare.",
+                    "error": True  # Flag per indicare che c'è stato un errore
+                }
 
 def get_final_analysis(history, scenarios):
     if not model:

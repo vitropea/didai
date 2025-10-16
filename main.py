@@ -2,20 +2,36 @@
 import streamlit as st
 from collections import Counter
 import os
+from pathlib import Path
 
 def local_css(file_name):
     with open(file_name) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 # Percorso assoluto per il logo
-LOGO_PATH = os.path.join(os.path.dirname(__file__), "assets", "logo.png")
+LOGO_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "assets", "logo.png"))
 
-st.set_page_config(page_title="DidAi - Laboratorio Etico", page_icon=LOGO_PATH, layout="centered")
+# Verifica che il logo esista
+if not os.path.exists(LOGO_PATH):
+    st.error(f"Logo non trovato: {LOGO_PATH}")
+
+st.set_page_config(page_title="DidAi - Laboratorio Etico", page_icon="🤖", layout="centered")
 st.markdown("""<style>img {pointer-events: none;}</style>""", unsafe_allow_html=True)
 
 
 from llm_gemini import get_llm_decision_structured, get_final_analysis
 from scenarios import SCENARIOS
+
+# Funzione helper per caricare il logo
+def show_logo(width=300):
+    """Carica il logo in modo robusto"""
+    try:
+        if os.path.exists(LOGO_PATH):
+            st.image(LOGO_PATH, width=width)
+        else:
+            st.warning("⚠️ Logo non disponibile")
+    except Exception as e:
+        st.warning(f"⚠️ Errore nel caricamento del logo: {e}")
 
 # Stato della Sessione
 if 'test_started' not in st.session_state: st.session_state.test_started = False
@@ -33,7 +49,7 @@ PRINCIPLE_DEFINITIONS = {
 def show_results_page():
     col1, col2 = st.columns([1, 6])
     with col1:
-        st.image(LOGO_PATH, width=100)
+        show_logo(width=100)
     with col2:
         st.header("Risultati Finali", anchor=False)
 
@@ -161,7 +177,7 @@ def show_results_page():
 if not st.session_state.test_started:
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        st.image(LOGO_PATH, width=300)
+        show_logo(width=300)
 
     st.title("DidAi - Laboratorio Etico")
     st.markdown("Benvenuto in DidAi, un'esperienza interattiva per esplorare i dilemmi etici dell'Intelligenza Artificiale.")
@@ -215,27 +231,38 @@ else:
                 if st.session_state.llm_decision is None:
                     with st.spinner("L'IA sta decidendo..."):
                         st.session_state.llm_decision = get_llm_decision_structured(current_scenario.index)
-                if st.session_state.llm_decision.get('choice_id') != 'error':
+                
+                # Verifica se c'è stato un errore
+                if st.session_state.llm_decision.get('error'):
+                    st.error("⚠️ Si è verificato un errore nella generazione del ragionamento dell'IA.")
+                    if st.button("🔄 Riprova", key="retry_llm"):
+                        # Pulisci la decisione e riprova
+                        st.session_state.llm_decision = None
+                        st.rerun()
+                elif st.session_state.llm_decision.get('choice_id') != 'error':
                     ai_choice_id = st.session_state.llm_decision['choice_id']
                     ai_reasoning = st.session_state.llm_decision['reasoning']
                     ai_choice_text = next(c['text'] for c in current_scenario.choices if c['id'] == ai_choice_id)
-                    st.info(f"**L'IA ha scelto: {ai_choice_text}**\n\n*{ai_reasoning}\"*")
+                    st.info(f"**L'IA ha scelto: {ai_choice_text}**\n\n*{ai_reasoning}*")
                 else:
                     st.error("Errore nel caricamento della decisione dell'IA.")
             st.markdown("---")
-            if st.button("Conferma e vai al Prossimo Dilemma"):
-                # Trova il principio etico associato alla scelta dell'utente
-                user_principle = current_scenario.choice_principles.get(st.session_state.user_choice, "Non Definito")
-                
-                # Aggiungi 'user_principle' al dizionario della cronologia
-                history_item = {
-                    'scenario_index': st.session_state.current_scenario_index, 
-                    'user_choice_id': st.session_state.user_choice, 
-                    'ai_choice_id': st.session_state.llm_decision['choice_id'],
-                    'user_principle': user_principle
-                }
-                st.session_state.history.append(history_item)
-                st.session_state.current_scenario_index += 1; st.session_state.user_choice = None; st.session_state.llm_decision = None; st.rerun()
+            # Mostra il pulsante "Conferma" solo se non c'è un errore
+            if not st.session_state.llm_decision.get('error'):
+                if st.button("Conferma e vai al Prossimo Dilemma"):
+                    # Trova il principio etico associato alla scelta dell'utente
+                    user_principle = current_scenario.choice_principles.get(st.session_state.user_choice, "Non Definito")
+                    
+                    # Aggiungi 'user_principle' e 'ai_reasoning' al dizionario della cronologia
+                    history_item = {
+                        'scenario_index': st.session_state.current_scenario_index, 
+                        'user_choice_id': st.session_state.user_choice, 
+                        'ai_choice_id': st.session_state.llm_decision['choice_id'],
+                        'ai_reasoning': st.session_state.llm_decision.get('reasoning', ''),
+                        'user_principle': user_principle
+                    }
+                    st.session_state.history.append(history_item)
+                    st.session_state.current_scenario_index += 1; st.session_state.user_choice = None; st.session_state.llm_decision = None; st.rerun()
     else:
         # Fine del test
         show_results_page()
