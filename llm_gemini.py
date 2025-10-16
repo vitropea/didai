@@ -124,7 +124,8 @@ def get_final_analysis(history, scenarios):
 
     # Aggiorna il prompt per chiedere un'analisi comparativa con marcatori espliciti
     prompt = f"""
-    Sei un saggio analista di etica. Hai appena sottoposto un utente a un test di dilemmi etici e hai registrato sia le sue scelte sia quelle di un'IA di riferimento.
+    Sei un saggio analista di etica. Devi parlare a un pubblico di qualsiasi genere ed età quindi devi utilizzare un linguaggio comprensibile ai più.
+    Hai appena sottoposto un utente a un test di dilemmi etici e hai registrato sia le sue scelte sia quelle di un'IA di riferimento.
 
     Ecco un riassunto completo del confronto:
     {summary}
