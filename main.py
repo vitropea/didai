@@ -24,14 +24,18 @@ from scenarios import SCENARIOS
 
 # Funzione helper per caricare il logo
 def show_logo(width=300):
-    """Carica il logo in modo robusto"""
+    """Carica il logo in modo robusto evitando problemi di cache"""
     try:
         if os.path.exists(LOGO_PATH):
-            st.image(LOGO_PATH, width=width)
+            # Leggi l'immagine come bytes per evitare problemi di cache
+            with open(LOGO_PATH, 'rb') as f:
+                image_bytes = f.read()
+            st.image(image_bytes, width=width)
         else:
             st.warning("⚠️ Logo non disponibile")
     except Exception as e:
-        st.warning(f"⚠️ Errore nel caricamento del logo: {e}")
+        # In caso di errore, mostra solo un placeholder testuale
+        st.markdown(f"<h3 style='text-align: center;'>🤖 DidAi</h3>", unsafe_allow_html=True)
 
 # Stato della Sessione
 if 'test_started' not in st.session_state: st.session_state.test_started = False
