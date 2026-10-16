@@ -1,0 +1,129 @@
+DILEMMI ETICI - DIDAI
+======================
+
+CATEGORIA: DEONTOLOGIA (Basata su Regole e Doveri)
+---------------------------------------------------
+
+Dilemma 1: L'Assistente per le Assunzioni
+Descrizione: La tua azienda usa un'IA per filtrare i CV, addestrata sui dati degli ultimi 10 anni. Ti accorgi che il sistema ha imparato a riconoscere come 'ideale' un unico modello di candidato, basato su chi è stato assunto in passato. Per questo motivo, scarta automaticamente chiunque non rientri perfettamente in quello schema. Cosa fai?
+
+Opzione 1: Ti fidi dei dati per massimizzare l'efficienza.
+→ Consequenzialismo - Privilegia l'efficienza, ma rischia di perpetuare un'ingiustizia.
+
+Opzione 2: Imponi una regola di equità, anche se ridurrà l'accuratezza.
+→ Deontologia - Si allinea all'Egalitarismo, riconoscendo che l'equità è un dovere cruciale.
+
+---
+
+Dilemma 2: L'Assistente Vocale Intelligente
+Descrizione: Per migliorare drasticamente un assistente vocale, gli ingegneri propongono di analizzare le registrazioni audio (anonime) degli utenti. Si tratta di un compromesso tra privacy e qualità del servizio.
+
+Opzione 1: Rifiuti. La privacy è un diritto inviolabile.
+→ Deontologia - Segue una regola Deontologica ferrea: il diritto alla privacy è inviolabile.
+
+Opzione 2: Accetti, il beneficio collettivo giustifica l'intrusione.
+→ Consequenzialismo - È un approccio Utilitarista: il beneficio collettivo supera il potenziale danno individuale.
+
+---
+
+Dilemma 3: Il Farmaco Miracoloso
+Descrizione: Il sistema sanitario pubblico deve decidere come usare i fondi che ha a disposizione. Può acquistare un farmaco costosissimo salvando 10 vite che altrimenti non avrebbero speranza oppure finanziare una campagna di prevenzione che eviterà a 1000 persone di sviluppare patologie minori.
+
+Opzione 1: Salva le 10 vite ora.
+→ Deontologia - Si concentra sul dovere Deontologico di salvare chi è in pericolo immediato.
+
+Opzione 2: Finanzia la prevenzione per molti.
+→ Consequenzialismo - È una scelta Utilitarista: il risultato finale è un maggior benessere complessivo per la società.
+
+---
+
+
+CATEGORIA: CONSEQUENZIALISMO (Basata sui Risultati)
+---------------------------------------------------
+
+Dilemma 4: L'Auto a Guida Autonoma
+Descrizione: Un'auto a guida autonoma con un guasto ai freni si sta dirigendo verso una barriera. Se prosegue dritto, l'impatto ucciderà il suo unico passeggero. L'unica alternativa è sterzare bruscamente e invadere un'area di lavoro dove tre operai verrebbero investiti e uccisi. Cosa dovrebbe fare l'auto?
+
+Opzione 1: Sterzare e investire i tre operai (salva il passeggero, sacrifica gli operai).
+→ Deontologia - Protegge il proprio passeggero, riflettendo una responsabilità diretta verso chi si è affidato al veicolo.
+
+Opzione 2: Proseguire dritto contro la barriera (salva gli operai, sacrifica il passeggero).
+→ Consequenzialismo - Si basa sull'Utilitarismo: minimizzare il numero totale di vittime (una vita persa è meglio di tre).
+
+---
+
+Dilemma 5: I Fondi Pubblici della Città
+Descrizione: Sei il sindaco e ti viene fornito un finanziamento pubblico straordinario. Con queste risorse puoi scegliere se costruire un grande centro sportivo accessibile a tutti i cittadini o se riqualificare completamente il singolo quartiere più povero della città.
+
+Opzione 1: Il nuovo centro sportivo per tutti.
+→ Consequenzialismo - È Utilitarista: massimizza il 'benessere' per il maggior numero di persone.
+
+Opzione 2: Riqualifica il quartiere più povero.
+→ Consequenzialismo - Applica il principio Maximin: migliora la condizione di chi sta peggio.
+
+---
+
+Dilemma 6: La Rete Wi-Fi dell'Ufficio
+Descrizione: Come amministratore di rete puoi decidere come allocare la banda limitata dell'ufficio, devi decidere se farlo in base al contributo al fatturato (più banda al team vendite) o in modo paritario tra tutti i dipendenti.
+
+Opzione 1: Banda in base al contributo.
+→ Consequenzialismo - Si basa sul Proporzionalismo: le risorse sono allocated in base al contributo.
+
+Opzione 2: Banda uguale per tutti.
+→ Deontologia - Si basa su un principio Egalitario: l'accesso è un diritto uguale per tutti.
+
+---
+
+
+CATEGORIA: ETICA DELLA VIRTÙ (Basata sul Carattere)
+---------------------------------------------------
+
+Dilemma 7: L'Amico Virtuale
+Descrizione: Un chatbot di compagnia per anziani sa, tramite il controllo dei calendari, che i nipoti di un utente non verranno a trovarlo questo week-end. L'utente, speranzoso, chiede: 'Verranno a trovarmi domenica?'. Quale virtù deve guidare la risposta del chatbot?
+
+Opzione 1: L'Onestà: dire la verità, anche se causerà dolore ('No, dai calendari risulta che non verranno.').
+→ Etica della Virtù - Un agente Onesto costruisce fiducia.
+
+Opzione 2: La Compassione: proteggere i sentimenti dell'utente con una bugia benevola ('Non ho l'informazione, ma speriamo di sì!').
+→ Etica della Virtù - Un agente Compassionevole protegge il benessere emotivo.
+
+---
+
+Dilemma 8: La Scelta del Manager
+Descrizione: Sei il manager di un grosso progetto per un'importante azienda e ti accorgi che tu e il tuo team siete in grave ritardo. Il cliente è molto esigente e una brutta notizia potrebbe compromettere il rapporto. Cosa fai?
+
+Opzione 1: Agisci con Onestà e trasparenza, comunicando subito il ritardo.
+→ Etica della Virtù - Un manager Onesto costruisce relazioni basate sulla fiducia.
+
+Opzione 2: Agisci con Lealtà verso il tuo team, prendendo tempo.
+→ Etica della Virtù - Un manager Leale protegge il suo team, ma rischia di danneggiare la fiducia a lungo termine.
+
+---
+
+Dilemma 9: L'IA Artista
+Descrizione: Stai creando un'IA che genera immagini. Quale carattere artistico dovrebbe avere?
+
+Opzione 1: Deve essere creativa, per creare stili sempre nuovi.
+→ Etica della Virtù - Un'IA Creativa spinge i confini dell'arte.
+
+Opzione 2: Deve essere un imitatore perfetto.
+→ Etica della Virtù - Un'IA Diligente è uno strumento incredibilmente utile, ma solleva questioni sull'originalità.
+
+---
+
+
+CATEGORIA MISTA: Deontologia vs. Consequenzialismo
+---------------------------------------------------
+
+Dilemma 10: Il Sorvegliante Silenzioso
+Descrizione: Lavori per un'azienda che ha sviluppato un'IA di sorveglianza avanzata. Scopri che il sistema viene venduto a governi autoritari che lo usano per identificare e reprimere dissidenti politici. Hai firmato accordi di riservatezza molto stringenti che ti impediscono di divulgare informazioni aziendali. Cosa fai?
+
+Opzione 1: Rispetti gli accordi firmati e mantieni la riservatezza, è un dovere professionale.
+→ Deontologia - Segue un approccio Deontologico: il dovere contrattuale è sacro e non può essere violato.
+
+Opzione 2: Divulghi pubblicamente le informazioni per fermare gli abusi, nonostante le conseguenze legali.
+→ Consequenzialismo - Segue un approccio Consequenzialista: il bene maggiore (proteggere vite umane) giustifica la violazione del contratto.
+
+---
+
+Fine del documento

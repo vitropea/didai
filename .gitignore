@@ -8,7 +8,7 @@
 venv/
 
 
-.streamlit/secrets.toml```
+.streamlit/secrets.toml
 
 # User-specific files
 *.rsuser

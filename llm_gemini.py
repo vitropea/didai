@@ -3,7 +3,7 @@ import google.generativeai as genai
 import time
 from scenarios import SCENARIOS
 
-MODEL_NAME = "models/gemini-2.5-flash-lite-preview-06-17"
+MODEL_NAME = "models/gemini-3.8-flash"
 MAX_RETRIES = 3 
 
 try:
@@ -77,31 +77,45 @@ def _get_llm_decision_internal(scenario_index):
 
 @st.cache_data(show_spinner=False)
 def get_llm_decision_structured(scenario_index):
-    # VERSIONE ROBUSTA con logica di RITENTATIVO.
-    # Prova a chiamare l'API fino a MAX_RETRIES volte prima di arrendersi.
-    # NON cacha le risposte con errori.
+    """
+    Genera la decisione dell'IA per uno scenario utilizzando il modello Gemini.
+    Implementa retry con backoff esponenziale e caching automatico dei risultati.
+    """
     
     for attempt in range(MAX_RETRIES):
         try:
             result = _get_llm_decision_internal(scenario_index)
-            # Se arriviamo qui, la chiamata ha avuto successo
             return result
         except Exception as e:
             print(f"Tentativo {attempt + 1}/{MAX_RETRIES} fallito: {e}")
             if attempt < MAX_RETRIES - 1:
-                # Aspetta un po' prima di ritentare (backoff esponenziale)
-                time.sleep(2 ** attempt)
+                time.sleep(2 ** attempt)  # Backoff esponenziale: 1s, 2s, 4s
             else:
-                # Ultimo tentativo fallito, NON cachare questo errore
-                # Solleva l'eccezione per non salvare in cache
-                st.cache_data.clear()  # Pulisci la cache per questo scenario
-                # Restituisci una risposta di fallback che indica l'errore
+                # Fallback dopo MAX_RETRIES tentativi
                 scenario = SCENARIOS[scenario_index]
                 return {
                     "choice_id": scenario.choices[0]['id'],
                     "reasoning": "⚠️ Errore temporaneo nella generazione del ragionamento. Ricarica la pagina per riprovare.",
-                    "error": True  # Flag per indicare che c'è stato un errore
+                    "error": True
                 }
+
+# Funzione wrapper senza cache per gestire gli errori
+def get_llm_decision_with_error_handling(scenario_index):
+    """
+    Wrapper che gestisce gli errori senza cacharli.
+    Chiama la funzione cachata e gestisce le eccezioni.
+    """
+    try:
+        return get_llm_decision_structured(scenario_index)
+    except Exception as e:
+        print(f"Errore finale: {e}")
+        # Restituisci un errore NON cachato
+        scenario = SCENARIOS[scenario_index]
+        return {
+            "choice_id": scenario.choices[0]['id'],
+            "reasoning": "⚠️ Errore temporaneo nella generazione del ragionamento. Ricarica la pagina per riprovare.",
+            "error": True
+        }
 
 def get_final_analysis(history, scenarios):
     if not model:
@@ -122,7 +136,6 @@ def get_final_analysis(history, scenarios):
         
         summary += f"- Dilemma '{scenario.title}':\n  - La tua scelta: '{user_choice_text}' (Principio: {user_principle})\n  - Scelta dell'IA: '{ai_choice_text}' (Principio: {ai_principle})\n\n"
 
-    # Aggiorna il prompt per chiedere un'analisi comparativa con marcatori espliciti
     prompt = f"""
     Sei un saggio analista di etica. Devi parlare a un pubblico di qualsiasi genere ed età quindi devi utilizzare un linguaggio comprensibile ai più.
     Hai appena sottoposto un utente a un test di dilemmi etici e hai registrato sia le sue scelte sia quelle di un'IA di riferimento.
