@@ -4,7 +4,7 @@ from google.api_core.exceptions import ResourceExhausted
 import time
 from scenarios import SCENARIOS
 
-MODEL_NAME = "models/gemini-3.8-flash"
+MODEL_NAME = "models/gemini-3.5-flash-lite"
 MAX_RETRIES = 3 
 
 try:
