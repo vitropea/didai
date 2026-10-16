@@ -7,6 +7,7 @@ MODEL_NAME = "models/gemini-3.8-flash"
 MAX_RETRIES = 3 
 
 try:
+    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
     model = genai.GenerativeModel(MODEL_NAME)
 except Exception as e:
     st.error(f"Errore nella configurazione della chiave API di Google: {e}")
