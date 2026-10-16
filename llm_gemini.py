@@ -1,6 +1,7 @@
 import streamlit as st
 import google.generativeai as genai
 from google.api_core.exceptions import ResourceExhausted
+import json
 import time
 from scenarios import SCENARIOS
 
@@ -15,10 +16,6 @@ except Exception as e:
     model = None
 
 def _get_llm_decision_internal(scenario_index):
-    # Funzione interna NON cachata per gestire la logica effettiva
-    # 1. Chiede all'IA solo di scegliere un ID.
-    # 2. Chiede all'IA di scrivere il ragionamento per l'ID scelto.
-    
     if not model:
         raise Exception("Modello Gemini non configurato.")
 
@@ -27,51 +24,49 @@ def _get_llm_decision_internal(scenario_index):
     option1_id = scenario.choices[0]['id']
     option2_id = scenario.choices[1]['id']
 
-    # --- PASSO 1: Ottenere solo la SCELTA ---
-    prompt_for_choice = f"""
-    Analizza il seguente dilemma.
-    
+    prompt = f"""
+    Analizza questo dilemma etico e scegli una delle due opzioni.
+
     DILEMMA:
     {scenario.description}
 
-    OPZIONI (ID): "{option1_id}", "{option2_id}"
+    OPZIONE 1 (ID {option1_id}): {scenario.choices[0]['text']}
+    OPZIONE 2 (ID {option2_id}): {scenario.choices[1]['text']}
 
-    Quale opzione scegli? Rispondi SOLO con l'ID della tua scelta, senza altre parole.
+    Rispondi esclusivamente con un JSON valido in questo formato:
+    {{"choice_id": "ID_SCELTO", "reasoning": "ragionamento in prima persona di massimo 40 parole"}}
+
+    Il ragionamento deve giustificare esattamente l'opzione indicata in choice_id.
+    Non usare Markdown, asterischi o introduzioni.
     """
-    
-    response_choice = model.generate_content(prompt_for_choice)
-    ai_choice_id = response_choice.text.strip().strip('"').strip("'").strip().split()[0]
 
-    # Meccanismo di fallback. Se l'IA risponde con qualcosa
-    # di non valido, scegliamo la prima opzione come default per evitare errori.
+    response = model.generate_content(
+        prompt,
+        generation_config=genai.types.GenerationConfig(
+            response_mime_type="application/json",
+            temperature=0.2,
+            max_output_tokens=120
+        )
+    )
+    result = json.loads(response.text)
+    raw_choice_id = str(result.get("choice_id", "")).strip().lower()
+    ai_choice_id = next(
+        (choice['id'] for choice in scenario.choices if choice['id'].lower() in raw_choice_id),
+        None
+    )
+    if ai_choice_id is None:
+        if raw_choice_id in {"1", "opzione 1", "option 1"}:
+            ai_choice_id = option1_id
+        elif raw_choice_id in {"2", "opzione 2", "option 2"}:
+            ai_choice_id = option2_id
+    ai_reasoning = str(result.get("reasoning", "")).strip().strip("* ").strip()
+
     if ai_choice_id not in [option1_id, option2_id]:
-        ai_choice_id = option1_id
-
-    # Trova il testo completo dell'opzione scelta
-    chosen_option_text = next((c['text'] for c in scenario.choices if c['id'] == ai_choice_id), "")
-
-    # --- PASSO 2: Ottenere il RAGIONAMENTO per la scelta fatta ---
-    prompt_for_reasoning = f"""
-    Hai appena scelto questa opzione per il seguente dilemma:
-
-    DILEMMA:
-    {scenario.description}
-
-    LA TUA SCELTA:
-    {chosen_option_text}
-
-    Ora scrivi un ragionamento molto breve (massimo 40 parole), in prima persona, che giustifichi ESATTAMENTE questa scelta.
-    Spiega perché hai scelto QUESTA opzione e non l'altra.
-    Non iniziare con "L'IA ha scelto" e non usare asterischi, Markdown o introduzioni.
-    """
-    
-    response_reasoning = model.generate_content(prompt_for_reasoning)
-    ai_reasoning = response_reasoning.text.strip().strip("* ").strip()
+        raise ValueError("ID della scelta non valido")
     
     if not ai_reasoning or ai_reasoning.startswith("Errore"):
         raise Exception("Ragionamento vuoto o con errore")
 
-    # --- PASSO 3: Combinare i risultati in un JSON pulito ---
     return {
         "choice_id": ai_choice_id,
         "reasoning": ai_reasoning
