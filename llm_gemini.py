@@ -1,5 +1,6 @@
 import streamlit as st
 import google.generativeai as genai
+from google.api_core.exceptions import ResourceExhausted
 import time
 from scenarios import SCENARIOS
 
@@ -87,6 +88,13 @@ def get_llm_decision_structured(scenario_index):
         try:
             result = _get_llm_decision_internal(scenario_index)
             return result
+        except ResourceExhausted:
+            scenario = SCENARIOS[scenario_index]
+            return {
+                "choice_id": scenario.choices[0]['id'],
+                "reasoning": "⚠️ Quota Gemini esaurita. Attendi qualche minuto o verifica limiti e fatturazione del progetto Google.",
+                "error": True
+            }
         except Exception as e:
             print(f"Tentativo {attempt + 1}/{MAX_RETRIES} fallito: {e}")
             if attempt < MAX_RETRIES - 1:
