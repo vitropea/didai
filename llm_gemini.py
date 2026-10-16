@@ -60,13 +60,13 @@ def _get_llm_decision_internal(scenario_index):
     LA TUA SCELTA:
     {chosen_option_text}
 
-    Ora, fornisci un ragionamento BREVE e CONCISO (massimo 100 parole) in prima persona che giustifichi ESATTAMENTE questa scelta che hai fatto.
-    Spiega perché hai scelto QUESTA opzione specifica e non l'altra.
-    Non menzionare l'ID della scelta.
+    Ora scrivi un ragionamento molto breve (massimo 40 parole), in prima persona, che giustifichi ESATTAMENTE questa scelta.
+    Spiega perché hai scelto QUESTA opzione e non l'altra.
+    Non iniziare con "L'IA ha scelto" e non usare asterischi, Markdown o introduzioni.
     """
     
     response_reasoning = model.generate_content(prompt_for_reasoning)
-    ai_reasoning = response_reasoning.text.strip()
+    ai_reasoning = response_reasoning.text.strip().strip("* ").strip()
     
     if not ai_reasoning or ai_reasoning.startswith("Errore"):
         raise Exception("Ragionamento vuoto o con errore")
